@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User { 
+  id         String     @id @default(uuid()) 
+  email      String     @unique
+  provider   Provider
+  streams    Stream[]   @relation("user")
+  upvotes    Upvote[]
+  added      Stream[]   @relation("addedBy")
+} 
+
+model Stream {
+  id            String      @id @default(uuid())
+  type          StreamType
+  url           String
+  extractedId   String
+  title         String      @default("")
+  smallImg      String      @default("")
+  bigImg        String      @default("")
+  active        Boolean     @default(true)
+  played        Boolean     @default(false)
+  playedTs      DateTime?   
+  createdAt     DateTime    @default(now())
+  upvotes       Upvote[]
+  addedById     String
+  addedBy       User         @relation(fields: [addedById], references: [id], name: "addedBy")
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], name: "user")
+  currentStream CurrentStream?
+}
+
+model CurrentStream {
+  userId        String      @id
+  streamId      String?     @unique
+  stream        Stream?     @relation(fields: [streamId], references: [id])
+}
+
+model Upvote {
+  id            String      @id @default(uuid())
+  userId        String
+  streamId      String
+  user          User        @relation(fields: [userId], references: [id])
+  stream        Stream      @relation(fields: [streamId], references: [id], onDelete: Cascade)
+  @@unique([userId, streamId])
+}
+
+
+enum StreamType {
+  Spotify
+  Youtube
+}
+
+
+enum Provider {
+  Google
+}
