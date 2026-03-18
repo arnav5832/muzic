@@ -17,8 +17,9 @@ interface Video {
   haveUpvoted: boolean
 }
 
-const creatorId = session?.user?.id;
-
 export default function Component() {
+  const { data: session } = useSession()  
+  const creatorId = session?.user?.id    
+
   return <StreamView playVideo={true} creatorId={creatorId}/>
 }
