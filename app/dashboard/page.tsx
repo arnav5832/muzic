@@ -1,7 +1,6 @@
 "use client"
 import 'react-toastify/dist/ReactToastify.css'
 import StreamView from "../components/StreamView"
-import { useSession } from "next-auth/react"
 
 interface Video {
   id: string
@@ -17,9 +16,8 @@ interface Video {
   haveUpvoted: boolean
 }
 
-export default function Component() {
-  const { data: session } = useSession()  
-  const creatorId = session?.user?.id    
+const creatorId = process.env.CREATOR_ID;
 
+export default function Component() {
   return <StreamView playVideo={true} creatorId={creatorId}/>
 }
