@@ -16,7 +16,7 @@ interface Video {
   haveUpvoted: boolean
 }
 
-const creatorId = "58c651bd-f1f5-48b6-81ac-a31719e84394"
+const creatorId = process.env.NEXT_PUBLIC_CREATOR_ID as string;
 
 export default function Component() {
   return <StreamView playVideo={true} creatorId={creatorId}/>
